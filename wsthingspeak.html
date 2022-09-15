@@ -111,43 +111,41 @@
 
         <ol>
           <li><a href="index.html">Home</a></li>
-          <li>Example Projects</li>
+          <li>Weather Station ThingSpeak</li>
         </ol>
-        <h2>ตัวอย่างโปรเจค</h2>
+        <h2>สถานีตรวจวัดสภาพอากาศ (ThingSpeak Server)</h2>
 
       </div>
     </section><!-- End Breadcrumbs -->
 
     <section class="inner-page">
       <div class="container">
-        <p>แสดงผลงานของเราที่กำลังทำงานอยู่บนระบบอินเตอร์เน็ต พร้อมทั้งคำอธิบายโปรเจคเพื่อการประกอบการตัดสินใจของลูกค้า</p>
+        <p>
+          แสดงข้อมูลของอุปกรณ์ตรวจวัดสภาพอากาศ เก็บข้อมูลและแสดงผลโดยเว็บไซต์ <a href="https://thingspeak.com/">ThingSpeak</a> 
+          โดยอุปกรณ์จะทำการตรวจวัดสภาพอากาศทุก ๆ 1 ชั่วโมง และส่งข้อมูลขึ้นแสดงบนเว็บไซต์(หากมีการเชื่อมต่ออินเตอร์เน็ต) โดยใช้การสื่อสารผ่านโปรโตคอล MQTT
+          ระบบนี้สามารถแสดงค่าได้สุงสุด 8 ชนิด และสามารถนำข้อมูลมาทำการวิเคราะห์และแปรผลขั้นสูงด้วย MATLAB โดยสามารถใช้งานได้ฟรี(มีข้อจำกัด) หรือแบบมีค่าใช้จ่าย 
+          เหมาะสำหรับการใช้งานในการศึกษาวิจัย เก็บสถิติ หรือเป็นระบบใช้งานจริงขนาดเล็ก 
+        </p>
       </br></br>
       </div>
 
       <div class="container">
-        <h3>โปรเจคที่เปิดแบบสาธารณะ</h3>
-        <p>สำหรับแสดงงานที่ออนไลน์อยู่ บุคคลทั่วไปสามารถเข้าดูได้ เป็นตัวอย่างงานของเรา</p>
-        <a href="wsthingspeak.html">Weather Station (ThingSpeak Server)</a></br>
-        <a href="wsfirebase.html">Weather Station (Google Firebase Server)</a></br>
-      </br></br>
+        <div class="row">
+          <!-- left column -->
+          <div class="column">
+            <p style="text-align:center;">อุณหภูมิ</p>
+            <p style="text-align:center;"><iframe width="450" height="260" style="border: 1px solid #cccccc;" src="https://thingspeak.com/channels/1847137/widgets/520217"></iframe></p>
+          </div>
+          <!-- right column -->
+          <div class="column">
+            <p style="text-align:center;">ความชื้นในอากาศ</p>
+            <p style="text-align:center;"><iframe width="450" height="260" style="border: 1px solid #cccccc;" src="https://thingspeak.com/channels/1847137/charts/2?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=24&title=Air+Humidity&type=line&xaxis=Time&yaxis=%25RH"></iframe></p>
+          </div>
+        </div>
       </div>
 
       <div class="container">
-        <h3>สำหรับลูกค้า</h3>
-        <p>สำหรับแสดงโปรเจคที่อยู่ระหว่างการสร้างชิ้นงาน สามารถเข้าดูได้เฉพาะลูกค้าเท่านั้น โดยเข้าทางเซิฟเวอร์และใช้รหัสผ่านที่ได้แจ้งไว้</p>
-        <a href="#">Server 1</a></br>
-        <a href="#">Server 2</a></br>
-        <a href="#">Server 3</a></br>
-      </br></br>
-      </div>
-
-      <div class="container">
-        <h3>สำหรับทีมงาน</h3>
-        <p>เซิฟเวอร์ทดสอบ เฉพาะทีมงานเพื่อใช้ทดสอบการทำงานเท่านั้น</p>
-        <a href="#">Raspberry Pi 1</a></br>
-        <a href="#">Raspberry Pi 2</a></br>
-        <a href="#">ThingSpeak</a></br>
-        <a href="#">Google Firebase</a></br>
+        <p>สำหรับอุปกรณ์ที่ใช้ในโปรเจคนี้ <a href="#">สามารถคลิกดูได้ที่นี่</a></p>
       </div>
     </section>
 
