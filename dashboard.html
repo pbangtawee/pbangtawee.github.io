@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Temperature and Humidity Dashboard</title>
+    <title>JSON Data Fetch</title>
 </head>
 <body>
-    <h1>Temperature and Humidity Dashboard</h1>
+    <h1>JSON Data from ESP32</h1>
     
     <div id="data-container">
         <p>Temperature: <span id="temperature">Loading...</span> °C</p>
@@ -13,7 +13,7 @@
 
     <script>
         function fetchData() {
-            fetch('/api/data') // Replace with the correct API endpoint
+            fetch('/json-endpoint') // Replace with the correct endpoint on your ESP32
                 .then(response => response.json())
                 .then(data => {
                     document.getElementById('temperature').textContent = data.temperature + " °C";
@@ -24,9 +24,11 @@
                 });
         }
 
-        // Fetch data on page load and refresh every 10 seconds (adjust as needed)
+        // Fetch data immediately when the page loads
         fetchData();
-        setInterval(fetchData, 10000);
+
+        // Optionally, you can set an interval to refresh the data periodically
+        setInterval(fetchData, 10000); // Refresh every 10 seconds (adjust as needed)
     </script>
 </body>
 </html>
