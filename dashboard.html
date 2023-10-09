@@ -13,14 +13,17 @@
         body {
             font-family: 'Noto Sans Thai', sans-serif;
         }
+
         h1 {
             text-align: center;
             font-size: 40px;
         }
+
         p {
             text-align: center;
             font-size: 20px;
         }
+
         span {
             font-size: 30px;
         }
@@ -35,33 +38,45 @@
         <p>Temperature: <span id="temperature">Loading...</span> °C</p>
         <p>Humidity: <span id="humidity">Loading...</span> %</p>
         <br>
+        <div style="text-align: center;">
+            <iframe width="450" height="260" style="border: 1px solid #cccccc;"
+                src="https://thingspeak.com/channels/1847137/charts/1?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=60&type=line&update=15"></iframe>
+            <iframe width="450" height="260" style="border: 1px solid #cccccc;"
+                src="https://thingspeak.com/channels/1847137/charts/2?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=60&type=line&update=15"></iframe>
+
+        </div>
+
         <p></p>
         <p>Last Update: <span id="last-update">-</span></p>
     </div>
 
     <script>
         function fetchData() {
-            fetch('/json-endpoint') // Replace with the correct endpoint on your ESP32
+            // Replace 'YOUR_CHANNEL_ID' with your actual ThingSpeak channel ID
+            const channelID = '1847137';
+            const apiKey = 'MM691U9HHDHB384E'; // You can get this from your ThingSpeak account
+
+            // Fetch the latest data from ThingSpeak
+            fetch(`https://api.thingspeak.com/channels/${channelID}/feeds/last.json?api_key=${apiKey}`)
                 .then(response => response.json())
                 .then(data => {
-                    document.getElementById('temperature').textContent = data.temperature + " °C";
-                    document.getElementById('humidity').textContent = data.humidity + " %";
+                    // Update the temperature and humidity values on the webpage
+                    document.getElementById('temperature').textContent = data.field1;
+                    document.getElementById('humidity').textContent = data.field2;
 
-                    // Display the last update time
-                    const lastUpdate = new Date();
-                    document.getElementById('last-update').textContent = lastUpdate.toLocaleString();
+                    // Format and update the last update time
+                    const lastUpdateTimestamp = new Date(data.created_at);
+                    const lastUpdateTimeString = lastUpdateTimestamp.toLocaleString();
+                    document.getElementById('lastUpdate').textContent = lastUpdateTimeString;
                 })
-
-                .catch(error => {
-                    console.error('Error fetching data:', error);
-                });
+                .catch(error => console.error('Error fetching data:', error));
         }
 
-        // Fetch data immediately when the page loads
+        // Fetch data initially
         fetchData();
 
-        // Optionally, you can set an interval to refresh the data periodically
-        setInterval(fetchData, 10000); // Refresh every 10 seconds (adjust as needed)
+        // Set up an interval to fetch new data every 5 seconds (adjust as needed)
+        setInterval(fetchData, 5000);
     </script>
 </body>
 
