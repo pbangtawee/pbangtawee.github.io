@@ -41,27 +41,26 @@
 
     <script>
         function fetchData() {
-            fetch('/json-endpoint') // Replace with the correct endpoint on your ESP32
+            // Replace 'YOUR_CHANNEL_ID' with your actual ThingSpeak channel ID
+            const channelID = '1847137';
+            const apiKey = 'MM691U9HHDHB384E'; // You can get this from your ThingSpeak account
+
+            // Fetch the latest data from ThingSpeak
+            fetch(`https://api.thingspeak.com/channels/${channelID}/feeds/last.json?api_key=${apiKey}`)
                 .then(response => response.json())
                 .then(data => {
-                    document.getElementById('temperature').textContent = data.temperature + " °C";
-                    document.getElementById('humidity').textContent = data.humidity + " %";
-
-                    // Display the last update time
-                    const lastUpdate = new Date();
-                    document.getElementById('last-update').textContent = lastUpdate.toLocaleString();
+                    // Update the temperature and humidity values on the webpage
+                    document.getElementById('temperature').textContent = data.field1 + ' &deg;C';
+                    document.getElementById('humidity').textContent = data.field2 + ' %';
                 })
-
-                .catch(error => {
-                    console.error('Error fetching data:', error);
-                });
+                .catch(error => console.error('Error fetching data:', error));
         }
 
-        // Fetch data immediately when the page loads
+        // Fetch data initially
         fetchData();
 
-        // Optionally, you can set an interval to refresh the data periodically
-        setInterval(fetchData, 10000); // Refresh every 10 seconds (adjust as needed)
+        // Set up an interval to fetch new data every 5 seconds (adjust as needed)
+        setInterval(fetchData, 5000);
     </script>
 </body>
 
