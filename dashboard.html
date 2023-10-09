@@ -50,8 +50,8 @@
                 .then(response => response.json())
                 .then(data => {
                     // Update the temperature and humidity values on the webpage
-                    document.getElementById('temperature').textContent = data.field1 + ' &deg;C';
-                    document.getElementById('humidity').textContent = data.field2 + ' %';
+                    document.getElementById('temperature').textContent = data.field1;
+                    document.getElementById('humidity').textContent = data.field2;
                 })
                 .catch(error => console.error('Error fetching data:', error));
         }
