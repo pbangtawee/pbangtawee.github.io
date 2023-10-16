@@ -39,9 +39,11 @@
         <p>Humidity: <span id="humidity">Loading...</span> %</p>
         <br>
         <div style="text-align: center;">
-            <iframe width="450" height="260" style="border: 1px solid #cccccc;" src="https://thingspeak.com/channels/1847137/charts/1?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=60&title=Temperature&type=line"></iframe>
+            <iframe width="450" height="260" style="border: 1px solid #cccccc;" src="https://thingspeak.com/channels/1841610/charts/1?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=100&title=Temperature&type=line&xaxis=Time&yaxis=Celcius"></iframe>
 
-            <iframe width="450" height="260" style="border: 1px solid #cccccc;" src="https://thingspeak.com/channels/1847137/charts/2?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=60&title=Humidity&type=line"></iframe>
+<iframe width="450" height="260" style="border: 1px solid #cccccc;" src="https://thingspeak.com/channels/1841610/charts/2?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=100&title=Humidity&type=line&xaxis=Time&yaxis=%25RH"></iframe>
+
+            
 
         </div>
 
@@ -52,8 +54,8 @@
     <script>
         function fetchData() {
             // Replace 'YOUR_CHANNEL_ID' with your actual ThingSpeak channel ID
-            const channelID = '1847137';
-            const apiKey = 'MM691U9HHDHB384E'; // You can get this from your ThingSpeak account
+            const channelID = '1841610';
+            const apiKey = 'IODX70UPQ6AYMMSJ'; // You can get this from your ThingSpeak account
 
             // Fetch the latest data from ThingSpeak
             fetch(`https://api.thingspeak.com/channels/${channelID}/feeds/last.json?api_key=${apiKey}`)
