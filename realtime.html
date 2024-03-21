@@ -11,13 +11,18 @@
     padding-top: 100px;
   }
   #time {
-    font-size: 3em;
+    font-size: 5em;
   }
 </style>
 </head>
 <body>
-  <h1>เวลาปัจจุบันคือ:</h1>
+  <h1>เวลาปัจจุบัน:</h1>
   <div id="time"></div>
+  <br>
+  <br>
+  <div>
+    
+  </div>
 
 <script>
 function updateTime() {
@@ -35,7 +40,7 @@ function updateTime() {
 }
 
 // ให้เรียกฟังก์ชัน updateTime() เพื่อให้เวลาปัจจุบันปรากฏอยู่ตลอดเวลา
-setInterval(updateTime, 1000);
+setInterval(updateTime, 500);
 </script>
 </body>
 </html>
