@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>แสดงเวลาปัจจุบัน</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding-top: 100px;
+  }
+  #time {
+    font-size: 3em;
+  }
+</style>
+</head>
+<body>
+  <h1>เวลาปัจจุบันคือ:</h1>
+  <div id="time"></div>
+
+<script>
+function updateTime() {
+  var now = new Date();
+  var hours = now.getHours();
+  var minutes = now.getMinutes();
+  var seconds = now.getSeconds();
+
+  hours = (hours < 10) ? "0" + hours : hours;
+  minutes = (minutes < 10) ? "0" + minutes : minutes;
+  seconds = (seconds < 10) ? "0" + seconds : seconds;
+
+  var timeString = hours + ":" + minutes + ":" + seconds;
+  document.getElementById("time").innerText = timeString;
+}
+
+// ให้เรียกฟังก์ชัน updateTime() เพื่อให้เวลาปัจจุบันปรากฏอยู่ตลอดเวลา
+setInterval(updateTime, 1000);
+</script>
+</body>
+</html>
