@@ -3,57 +3,60 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>นับถอยหลังไปยังเวลา 15:00</title>
+<title>Countdown Timer</title>
 <style>
-  body {
-    font-family: Arial, sans-serif;
+  .container {
     text-align: center;
-  }
-  #countdown {
-    font-size: 2rem;
-    margin-top: 20px;
+    margin-top: 50px;
   }
 </style>
 </head>
 <body>
-<h1>เวลาปัจจุบัน</h1>
-<div id="current-time"></div>
-<h1>นับถอยหลังไปยังเวลา 15:00</h1>
-<div id="countdown"></div>
+<div class="container">
+  <h1>Countdown Timer</h1>
+  <div>
+    <label for="target-time">Select Target Time:</label>
+    <select id="target-time">
+      <option value="10">10 seconds</option>
+      <option value="30">30 seconds</option>
+      <option value="60">1 minute</option>
+      <!-- Add more options as needed -->
+    </select>
+  </div>
+  <button onclick="startCountdown()">Start Countdown</button>
+  <div id="current-time"></div>
+  <div id="countdown"></div>
+</div>
 
 <script>
-// เรียกฟังก์ชัน updateClock() เพื่ออัปเดตเวลาปัจจุบันทุกๆ 1 วินาที
-setInterval(updateClock, 1000);
-
-function updateClock() {
-  var now = new Date();
-  var currentTime = now.toLocaleTimeString();
-  document.getElementById("current-time").innerHTML = currentTime;
-
-  // เวลาที่ต้องการนับถอยหลัง (00:00 ของวันถัดไป)
-  var targetTime = new Date(now);
-  targetTime.setHours(0, 0, 0, 0);
-  targetTime.setDate(targetTime.getDate() + 1); // เพิ่มวันเพื่อให้เป็นเวลาเที่ยงคืนของวันถัดไป
-
-  // คำนวณเวลาที่เหลือ
-  var timeDiff = targetTime - now;
-  if (timeDiff > 0) {
-    var minutes = Math.floor(timeDiff / (1000 * 60));
-    var seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+function startCountdown() {
+  var targetTime = document.getElementById("target-time").value;
+  var countdownDisplay = document.getElementById("countdown");
+  
+  var countdownInterval = setInterval(function() {
+    var now = new Date().getTime();
+    var distance = targetTime * 1000 - now; // Calculate distance from now to target time in milliseconds
     
-    // แสดงผลเฉพาะนาทีและวินาทีเท่านั้น
-    var countdownStr = padLeft(minutes, 2) + ":" + padLeft(seconds, 2);
-    document.getElementById("countdown").innerHTML = countdownStr;
-  } else {
-    document.getElementById("countdown").innerHTML = "00:00";
-  }
+    if (distance < 0) {
+      clearInterval(countdownInterval);
+      countdownDisplay.innerHTML = "Time's up!";
+    } else {
+      var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+      
+      countdownDisplay.innerHTML = "Time remaining: " + minutes + "m " + seconds + "s ";
+    }
+  }, 1000); // Update every second
 }
 
-// ฟังก์ชันเพิ่มเลข 0 ข้างหน้าเวลาที่มีเพียงหลักเดียว
-function padLeft(number, width) {
-  var str = String(number);
-  return str.length >= width ? str : "0".repeat(width - str.length) + str;
+function getCurrentTime() {
+  var currentTimeDisplay = document.getElementById("current-time");
+  var currentTime = new Date().toLocaleTimeString();
+  currentTimeDisplay.innerHTML = "Current time: " + currentTime;
 }
+
+// Update current time every second
+setInterval(getCurrentTime, 1000);
 </script>
 </body>
 </html>
