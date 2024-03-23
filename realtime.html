@@ -30,9 +30,10 @@ function updateClock() {
   var currentTime = now.toLocaleTimeString();
   document.getElementById("current-time").innerHTML = currentTime;
 
-  // เวลาที่ต้องการนับถอยหลัง (15:00)
-  var targetTime = new Date();
-  targetTime.setHours(15, 0, 0, 0);
+  // เวลาที่ต้องการนับถอยหลัง (00:00 ของวันถัดไป)
+  var targetTime = new Date(now);
+  targetTime.setHours(0, 0, 0, 0);
+  targetTime.setDate(targetTime.getDate() + 1); // เพิ่มวันเพื่อให้เป็นเวลาเที่ยงคืนของวันถัดไป
 
   // คำนวณเวลาที่เหลือ
   var timeDiff = targetTime - now;
@@ -41,15 +42,10 @@ function updateClock() {
     var seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
     
     // แสดงผลเฉพาะนาทีและวินาทีเท่านั้น
-    if (minutes > 99) {
-      minutes = 99;
-      seconds = 59;
-    }
-    
     var countdownStr = padLeft(minutes, 2) + ":" + padLeft(seconds, 2);
     document.getElementById("countdown").innerHTML = countdownStr;
   } else {
-    document.getElementById("countdown").innerHTML = "หมดเวลาแล้ว";
+    document.getElementById("countdown").innerHTML = "00:00";
   }
 }
 
@@ -58,7 +54,6 @@ function padLeft(number, width) {
   var str = String(number);
   return str.length >= width ? str : "0".repeat(width - str.length) + str;
 }
-
 </script>
 </body>
 </html>
