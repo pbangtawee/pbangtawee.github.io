@@ -3,44 +3,49 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>เทียบเวลา</title>
+<title>นับถอยหลังไปยังเวลา 15:00</title>
 <style>
   body {
     font-family: Arial, sans-serif;
     text-align: center;
-    padding-top: 100px;
   }
-  #time {
-    font-size: 5em;
+  #countdown {
+    font-size: 2rem;
+    margin-top: 20px;
   }
 </style>
 </head>
 <body>
-  <h1>เวลาปัจจุบัน:</h1>
-  <div id="time"></div>
-  <br>
-  <br>
-  <div>
-    
-  </div>
+<h1>เวลาปัจจุบัน</h1>
+<div id="current-time"></div>
+<h1>นับถอยหลังไปยังเวลา 15:00</h1>
+<div id="countdown"></div>
 
 <script>
-function updateTime() {
+// เรียกฟังก์ชัน updateClock() เพื่ออัปเดตเวลาปัจจุบันทุกๆ 1 วินาที
+setInterval(updateClock, 1000);
+
+function updateClock() {
   var now = new Date();
-  var hours = now.getHours();
-  var minutes = now.getMinutes();
-  var seconds = now.getSeconds();
+  var currentTime = now.toLocaleTimeString();
+  document.getElementById("current-time").innerHTML = currentTime;
 
-  hours = (hours < 10) ? "0" + hours : hours;
-  minutes = (minutes < 10) ? "0" + minutes : minutes;
-  seconds = (seconds < 10) ? "0" + seconds : seconds;
+  // เวลาที่ต้องการนับถอยหลัง (15:00)
+  var targetTime = new Date();
+  targetTime.setHours(15, 0, 0, 0);
 
-  var timeString = hours + ":" + minutes + ":" + seconds;
-  document.getElementById("time").innerText = timeString;
+  // คำนวณเวลาที่เหลือ
+  var timeDiff = targetTime - now;
+  if (timeDiff > 0) {
+    var hours = Math.floor(timeDiff / (1000 * 60 * 60));
+    var minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+    var seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+    var countdownStr = hours + " ชั่วโมง " + minutes + " นาที " + seconds + " วินาที";
+    document.getElementById("countdown").innerHTML = countdownStr;
+  } else {
+    document.getElementById("countdown").innerHTML = "หมดเวลาแล้ว";
+  }
 }
-
-// ให้เรียกฟังก์ชัน updateTime() เพื่อให้เวลาปัจจุบันปรากฏอยู่ตลอดเวลา
-setInterval(updateTime, 500);
 </script>
 </body>
 </html>
