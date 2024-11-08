@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESP32 Dashboard</title>
+    <style>
+        /* General layout adjustments for responsive design */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f3f4f6;
+            color: #333;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .container {
+            max-width: 100%;
+            width: 100%;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        h2 {
+            font-size: 2rem;
+            color: #512d6d;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .gauge-container {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .gauge {
+            flex: 1 1 200px;
+            min-width: 180px;
+            max-width: 300px;
+            text-align: center;
+            position: relative;
+        }
+
+        .gauge-value {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.5rem;
+            color: #512d6d;
+            font-weight: bold;
+        }
+
+        .chart-container {
+            width: 100%;
+            max-width: 800px;
+            height: 350px;
+            margin-top: 1rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .button-refresh {
+            background-color: #512d6d;
+            color: white;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+            max-width: 150px;
+        }
+
+        .button-refresh:hover {
+            background-color: #3d2351;
+        }
+
+        /* Media queries for larger screens */
+        @media (min-width: 1200px) {
+            .container {
+                max-width: 1200px;
+            }
+
+            h2 {
+                font-size: 2.5rem;
+            }
+
+            .chart-container {
+                height: 400px;
+            }
+        }
+
+        @media (min-width: 1440px) {
+            h2 {
+                font-size: 3rem;
+            }
+
+            .chart-container {
+                height: 450px;
+            }
+        }
+
+        @media (min-width: 1920px) {
+            .container {
+                max-width: 1920px;
+            }
+
+            h2 {
+                font-size: 3.5rem;
+            }
+
+            .chart-container {
+                height: 500px;
+            }
+        }
+    </style>
+
+    <!-- Include Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body onload="fetchData()">
+    <div class="container">
+        <h2>ESP32 Sensor Dashboard</h2>
+
+        <!-- Gauge Display for Temperature and Humidity -->
+        <div class="gauge-container">
+            <div class="gauge">
+                <canvas id="tempGauge" width="100" height="100"></canvas>
+                <div class="gauge-value" id="tempValue">--°C</div>
+                <p>Temperature</p>
+            </div>
+            <div class="gauge">
+                <canvas id="humGauge" width="100" height="100"></canvas>
+                <div class="gauge-value" id="humValue">--%</div>
+                <p>Humidity</p>
+            </div>
+        </div>
+
+        <!-- Historical Data Chart -->
+        <div class="chart-container">
+            <canvas id="historyChart"></canvas>
+        </div>
+
+        <button class="button-refresh" onclick="fetchData()">เรียกข้อมูลใหม่</button>
+    </div>
+
+    <script>
+        let tempGauge, humGauge, historyChart;
+
+        async function fetchData() {
+            const apiKey = "IODX70UPQ6AYMMSJ";
+            const channelID = "1841610";
+            const url = `https://api.thingspeak.com/channels/${channelID}/feeds.json?api_key=${apiKey}&results=10`;
+
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                const feeds = data.feeds;
+                const latestData = feeds[feeds.length - 1];
+
+                const tempValue = parseFloat(latestData.field1);
+                const humValue = parseFloat(latestData.field2);
+
+                document.getElementById('tempValue').innerText = `${tempValue}°C`;
+                document.getElementById('humValue').innerText = `${humValue}%`;
+
+                updateGauge(tempGauge, tempValue);
+                updateGauge(humGauge, humValue);
+
+                const tempData = feeds.map(feed => parseFloat(feed.field1));
+                const humData = feeds.map(feed => parseFloat(feed.field2));
+                const labels = feeds.map(feed => new Date(feed.created_at).toLocaleTimeString());
+
+                updateChart(historyChart, labels, tempData, humData);
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
+        }
+
+        function initializeGauges() {
+            const gaugeOptions = { type: 'doughnut', data: { datasets: [{ data: [0, 100], backgroundColor: ['#3d2351', '#ddd'], borderWidth: 0 }] }, options: { rotation: -Math.PI, circumference: Math.PI, cutout: '80%', plugins: { legend: { display: false } } } };
+            tempGauge = new Chart(document.getElementById('tempGauge'), { ...gaugeOptions });
+            humGauge = new Chart(document.getElementById('humGauge'), { ...gaugeOptions });
+        }
+
+        function updateGauge(gauge, value) {
+            gauge.data.datasets[0].data[0] = value;
+            gauge.data.datasets[0].data[1] = 100 - value;
+            gauge.update();
+        }
+
+        function initializeChart() {
+            const ctx = document.getElementById('historyChart').getContext('2d');
+            historyChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [
+                        { label: 'Temperature (°C)', data: [], borderColor: '#512d6d', backgroundColor: 'rgba(81, 45, 109, 0.2)', fill: true },
+                        { label: 'Humidity (%)', data: [], borderColor: '#3d2351', backgroundColor: 'rgba(61, 35, 81, 0.2)', fill: true }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { position: 'top' } },
+                    scales: { x: { display: true, title: { display: true, text: 'Time' } }, y: { display: true, title: { display: true, text: 'Value' } } }
+                }
+            });
+        }
+
+        function updateChart(chart, labels, tempData, humData) {
+            chart.data.labels = labels;
+            chart.data.datasets[0].data = tempData;
+            chart.data.datasets[1].data = humData;
+            chart.update();
+        }
+
+        window.onload = function () {
+            initializeGauges();
+            initializeChart();
+        };
+    </script>
+</body>
+
+</html>
