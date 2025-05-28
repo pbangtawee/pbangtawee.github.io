@@ -139,18 +139,11 @@
         <h2>สภาพแวดล้อมภายในห้องวิจัย</h2>
 
         <!-- Gauge Display for Temperature and Humidity -->
-        <div class="gauge-container">
-            <div class="gauge">
-                <canvas id="tempGauge" width="100" height="100"></canvas>
-                <div class="gauge-value" id="tempValue">--°C</div>
-                <p>Temperature</p>
-            </div>
-            <div class="gauge">
-                <canvas id="humGauge" width="100" height="100"></canvas>
-                <div class="gauge-value" id="humValue">--%</div>
-                <p>Humidity</p>
-            </div>
-        </div>
+       <!-- Gauge Display for Temperature and Humidity -->
+<!-- Bar Display for Temperature and Humidity -->
+<div class="chart-container">
+    <canvas id="barChart"></canvas>
+</div>
 
         <!-- Historical Data Chart -->
         <div class="chart-container">
@@ -161,7 +154,9 @@
     </div>
 
     <script>
+        
         let tempGauge, humGauge, historyChart;
+        let tempHumBarChart;
 
         async function fetchData() {
             const apiKey = "IODX70UPQ6AYMMSJ";
@@ -180,8 +175,7 @@
                 document.getElementById('tempValue').innerText = `${tempValue}°C`;
                 document.getElementById('humValue').innerText = `${humValue}%`;
 
-                updateGauge(tempGauge, tempValue);
-                updateGauge(humGauge, humValue);
+                updateBarChart(tempValue, humValue);
 
                 const tempData = feeds.map(feed => parseFloat(feed.field1));
                 const humData = feeds.map(feed => parseFloat(feed.field2));
@@ -193,17 +187,35 @@
             }
         }
 
-        function initializeGauges() {
-            const gaugeOptions = { type: 'doughnut', data: { datasets: [{ data: [0, 100], backgroundColor: ['#3d2351', '#ddd'], borderWidth: 0 }] }, options: { rotation: -Math.PI, circumference: Math.PI, cutout: '80%', plugins: { legend: { display: false } } } };
-            tempGauge = new Chart(document.getElementById('tempGauge'), { ...gaugeOptions });
-            humGauge = new Chart(document.getElementById('humGauge'), { ...gaugeOptions });
+function initializeBarChart() {
+    const ctx = document.getElementById('barChart').getContext('2d');
+    tempHumBarChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Temperature (°C)', 'Humidity (%)'],
+            datasets: [{
+                label: 'Current Values',
+                data: [0, 0],
+                backgroundColor: ['#512d6d', '#3d2351']
+            }]
+        },
+        options: {
+            responsive: true,
+            indexAxis: 'y',
+            scales: {
+                x: {
+                    beginAtZero: true,
+                    max: 100
+                }
+            }
         }
+    });
+}
 
-        function updateGauge(gauge, value) {
-            gauge.data.datasets[0].data[0] = value;
-            gauge.data.datasets[0].data[1] = 100 - value;
-            gauge.update();
-        }
+function updateBarChart(temp, hum) {
+    tempHumBarChart.data.datasets[0].data = [temp, hum];
+    tempHumBarChart.update();
+}
 
         function initializeChart() {
             const ctx = document.getElementById('historyChart').getContext('2d');
@@ -231,10 +243,11 @@
             chart.update();
         }
 
-        window.onload = function () {
-            initializeGauges();
-            initializeChart();
-        };
+window.onload = function () {
+    initializeBarChart();
+    initializeChart();
+    fetchData();
+};
     </script>
 </body>
 
