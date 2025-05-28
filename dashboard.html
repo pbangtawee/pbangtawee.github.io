@@ -196,7 +196,28 @@
         }
 
         function initializeGauges() {
-            const gaugeOptions = { type: 'doughnut', data: { datasets: [{ data: [0, 100], backgroundColor: ['#3d2351', '#ddd'], borderWidth: 0 }] }, options: { rotation: -Math.PI, circumference: Math.PI, cutout: '80%', plugins: { legend: { display: false } } } };
+           const gaugeOptions = {
+    type: 'doughnut',
+    data: {
+        datasets: [{
+            data: [0, 100],
+            backgroundColor: ['#3d2351', '#ddd'],
+            borderWidth: 0
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,  // <== This is key
+        rotation: -Math.PI,
+        circumference: Math.PI,
+        cutout: '80%',
+        plugins: {
+            legend: {
+                display: false
+            }
+        }
+    }
+};
             tempGauge = new Chart(document.getElementById('tempGauge'), { ...gaugeOptions });
             humGauge = new Chart(document.getElementById('humGauge'), { ...gaugeOptions });
         }
